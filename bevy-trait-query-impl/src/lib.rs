@@ -148,6 +148,8 @@ fn impl_trait_query(arg: TokenStream, item: TokenStream) -> Result<TokenStream2>
     let impl_generics_with_lifetime = quote! { <#( #impl_generics_with_lifetime ,)*> };
 
     let trait_object_query_code = quote! {
+        unsafe impl #impl_generics #imports::SingleEntityQueryData for &#trait_object {}
+        unsafe impl #impl_generics #imports::IterQueryData for &#trait_object {}
         unsafe impl #impl_generics #imports::QueryData for &#trait_object
         #where_clause
         {
@@ -269,6 +271,8 @@ fn impl_trait_query(arg: TokenStream, item: TokenStream) -> Result<TokenStream2>
             }
         }
 
+        unsafe impl #impl_generics_with_lifetime #imports::SingleEntityQueryData for &'__a mut #trait_object {}
+        unsafe impl #impl_generics_with_lifetime #imports::IterQueryData for &'__a mut #trait_object {}
         unsafe impl #impl_generics_with_lifetime #imports::QueryData for &'__a mut #trait_object
         #where_clause
         {

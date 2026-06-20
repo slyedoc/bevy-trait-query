@@ -1,4 +1,7 @@
-use bevy_ecs::ptr::UnsafeCellDeref;
+use bevy_ecs::{
+    ptr::UnsafeCellDeref,
+    query::{IterQueryData, SingleEntityQueryData},
+};
 use core::marker::PhantomData;
 
 use bevy_ecs::{
@@ -21,6 +24,8 @@ pub struct OneAdded<Trait: ?Sized + TraitQuery> {
     marker: PhantomData<&'static Trait>,
 }
 
+unsafe impl<Trait: ?Sized + TraitQuery> IterQueryData for OneAdded<Trait> {}
+unsafe impl<Trait: ?Sized + TraitQuery> SingleEntityQueryData for OneAdded<Trait> {}
 unsafe impl<Trait: ?Sized + TraitQuery> QueryData for OneAdded<Trait> {
     type ReadOnly = Self;
 
@@ -136,18 +141,18 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for OneAdded<Trait> {
         let mut not_first = false;
         for &component in &*state.components {
             assert!(
-                !access.access().has_component_write(component),
+                !access.access().has_write(component),
                 "&{} conflicts with a previous access in this query. Shared access cannot coincide with exclusive access.",
                 core::any::type_name::<Trait>(),
             );
             if not_first {
                 let mut intermediate = access.clone();
-                intermediate.add_component_read(component);
+                intermediate.add_read(component);
                 new_access.append_or(&intermediate);
                 new_access.extend_access(&intermediate);
             } else {
                 new_access.and_with(component);
-                new_access.access_mut().add_component_read(component);
+                new_access.access_mut().add_read(component);
                 not_first = true;
             }
         }

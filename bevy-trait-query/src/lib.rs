@@ -283,8 +283,8 @@ pub mod imports {
         component::{Component, ComponentId, Components},
         entity::Entity,
         query::{
-            Access, Added, Changed, EcsAccessType, FilteredAccess, QueryData, QueryFilter,
-            QueryItem, ReadOnlyQueryData, WorldQuery,
+            Access, Added, Changed, EcsAccessType, FilteredAccess, IterQueryData, QueryData,
+            QueryFilter, QueryItem, ReadOnlyQueryData, SingleEntityQueryData, WorldQuery,
         },
         storage::{Table, TableRow},
         world::{World, unsafe_world_cell::UnsafeWorldCell},

@@ -2,6 +2,7 @@ use bevy_ecs::change_detection::{Mut, Ref, Tick};
 use bevy_ecs::entity::Entity;
 use bevy_ecs::prelude::World;
 use bevy_ecs::ptr::UnsafeCellDeref;
+use bevy_ecs::query::{IterQueryData, SingleEntityQueryData};
 use bevy_ecs::{
     component::{ComponentId, Components},
     query::{QueryData, QueryItem, ReadOnlyQueryData, WorldQuery},
@@ -23,6 +24,8 @@ use crate::{
 /// - `Query<One<&mut dyn Trait>>` yields a [`Mut`] object
 pub struct One<T>(pub T);
 
+unsafe impl<Trait: ?Sized + TraitQuery> IterQueryData for One<&Trait> {}
+unsafe impl<Trait: ?Sized + TraitQuery> SingleEntityQueryData for One<&Trait> {}
 unsafe impl<Trait: ?Sized + TraitQuery> QueryData for One<&Trait> {
     type ReadOnly = Self;
 
@@ -239,6 +242,8 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for One<&Trait> {
     }
 }
 
+unsafe impl<'a, Trait: ?Sized + TraitQuery> IterQueryData for One<&'a mut Trait> {}
+unsafe impl<'a, Trait: ?Sized + TraitQuery> SingleEntityQueryData for One<&'a mut Trait> {}
 unsafe impl<'a, Trait: ?Sized + TraitQuery> QueryData for One<&'a mut Trait> {
     type ReadOnly = One<&'a Trait>;
 
@@ -412,18 +417,18 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for One<&mut Trait> {
         let mut not_first = false;
         for &component in &*state.components {
             assert!(
-                !access.access().has_component_write(component),
+                !access.access().has_write(component),
                 "&mut {} conflicts with a previous access in this query. Mutable component access must be unique.",
                 core::any::type_name::<Trait>(),
             );
             if not_first {
                 let mut intermediate = access.clone();
-                intermediate.add_component_write(component);
+                intermediate.add_write(component);
                 new_access.append_or(&intermediate);
                 new_access.extend_access(&intermediate);
             } else {
                 new_access.and_with(component);
-                new_access.access_mut().add_component_write(component);
+                new_access.access_mut().add_write(component);
                 not_first = true;
             }
         }

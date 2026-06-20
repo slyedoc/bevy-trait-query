@@ -47,7 +47,7 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for WithoutAny<Trait> {
     fn update_component_access(state: &Self::State, access: &mut bevy_ecs::query::FilteredAccess) {
         for &component in &*state.components {
             assert!(
-                !access.access().has_component_write(component),
+                !access.access().has_write(component),
                 "&{} conflicts with a previous access in this query. Shared access cannot coincide with exclusive access.",
                 core::any::type_name::<Trait>(),
             );

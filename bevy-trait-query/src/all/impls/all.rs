@@ -2,7 +2,9 @@ use bevy_ecs::{
     change_detection::Tick,
     component::{ComponentId, Components},
     entity::Entity,
-    query::{QueryData, QueryItem, ReadOnlyQueryData, WorldQuery},
+    query::{
+        IterQueryData, QueryData, QueryItem, ReadOnlyQueryData, SingleEntityQueryData, WorldQuery,
+    },
     storage::TableRow,
     world::{World, unsafe_world_cell::UnsafeWorldCell},
 };
@@ -27,6 +29,8 @@ use crate::{
 /// - `Query<&mut dyn Trait>` yields a [`WriteTraits`] object
 pub struct All<T: ?Sized>(T);
 
+unsafe impl<Trait: ?Sized + TraitQuery> IterQueryData for All<&Trait> {}
+unsafe impl<Trait: ?Sized + TraitQuery> SingleEntityQueryData for All<&Trait> {}
 unsafe impl<Trait: ?Sized + TraitQuery> QueryData for All<&Trait> {
     type ReadOnly = Self;
 
@@ -124,18 +128,18 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for All<&Trait> {
         let mut new_access = access.clone();
         for &component in &*state.components {
             assert!(
-                !access.access().has_component_write(component),
+                !access.access().has_write(component),
                 "&{} conflicts with a previous access in this query. Shared access cannot coincide with exclusive access.",
                 core::any::type_name::<Trait>(),
             );
             if not_first {
                 let mut intermediate = access.clone();
-                intermediate.add_component_read(component);
+                intermediate.add_read(component);
                 new_access.append_or(&intermediate);
                 new_access.extend_access(&intermediate);
             } else {
                 new_access.and_with(component);
-                new_access.access_mut().add_component_read(component);
+                new_access.access_mut().add_read(component);
                 not_first = true;
             }
         }
@@ -169,6 +173,8 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for All<&Trait> {
     }
 }
 
+unsafe impl<'a, Trait: ?Sized + TraitQuery> IterQueryData for All<&'a mut Trait> {}
+unsafe impl<'a, Trait: ?Sized + TraitQuery> SingleEntityQueryData for All<&'a mut Trait> {}
 unsafe impl<'a, Trait: ?Sized + TraitQuery> QueryData for All<&'a mut Trait> {
     type ReadOnly = All<&'a Trait>;
 
@@ -266,18 +272,18 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for All<&mut Trait> {
         let mut new_access = access.clone();
         for &component in &*state.components {
             assert!(
-                !access.access().has_component_write(component),
+                !access.access().has_write(component),
                 "&mut {} conflicts with a previous access in this query. Mutable component access must be unique.",
                 core::any::type_name::<Trait>(),
             );
             if not_first {
                 let mut intermediate = access.clone();
-                intermediate.add_component_write(component);
+                intermediate.add_write(component);
                 new_access.append_or(&intermediate);
                 new_access.extend_access(&intermediate);
             } else {
                 new_access.and_with(component);
-                new_access.access_mut().add_component_write(component);
+                new_access.access_mut().add_write(component);
                 not_first = true;
             }
         }
