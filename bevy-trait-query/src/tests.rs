@@ -2,6 +2,7 @@ extern crate std;
 
 use super::*;
 use bevy_ecs::prelude::*;
+use bevy_ecs::resource::IsResource;
 
 use std::borrow::ToOwned;
 use std::fmt::{Debug, Display};
@@ -525,8 +526,8 @@ fn with_one_filter() {
         world.resource::<Output>().0,
         &[
             "People that are either Human or Dolphin but not both:",
-            "0v0",
-            "2v0",
+            "3v0",
+            "5v0",
             "",
         ]
     );
@@ -566,13 +567,13 @@ fn without_any_filter() {
 
     assert_eq!(
         world.resource::<Output>().0,
-        &["People that are neither Human or Dolphin:", "3v0", "",]
+        &["People that are neither Human or Dolphin:", "6v0", "",]
     );
 }
 
 // Prints the entity id of every Entity where none of its components implement the trait
 fn print_without_any_filter_info(
-    people: Query<Entity, WithoutAny<dyn Person>>,
+    people: Query<Entity, (WithoutAny<dyn Person>, Without<IsResource>)>,
     mut output: ResMut<Output>,
 ) {
     output
@@ -757,7 +758,7 @@ fn transmute_doesnt_panic_if_no_trait_touched() {
 
     schedule.run(&mut world);
 
-    assert_eq!(world.resource::<Output>().0, &["0v0", "2v0", "3v0"]);
+    assert_eq!(world.resource::<Output>().0, &["3v0", "5v0", "6v0"]);
 }
 
 fn query_and_transmute_and_print_panic(
