@@ -512,10 +512,12 @@ fn with_one_filter() {
         .register_component_as::<dyn Person, Human>()
         .register_component_as::<dyn Person, Dolphin>();
 
-    world.spawn(Human("Henry".to_owned(), 22));
-    world.spawn((Human("Henry".to_owned(), 22), Dolphin(22)));
-    world.spawn(Dolphin(22));
-    world.spawn(Fem);
+    let a = world.spawn(Human("Henry".to_owned(), 22)).id();
+    let _ = world
+        .spawn((Human("Henry".to_owned(), 22), Dolphin(22)))
+        .id();
+    let c = world.spawn(Dolphin(22)).id();
+    let _ = world.spawn(Fem).id();
 
     let mut schedule = Schedule::default();
     schedule.add_systems(print_with_one_filter_info);
@@ -526,8 +528,8 @@ fn with_one_filter() {
         world.resource::<Output>().0,
         &[
             "People that are either Human or Dolphin but not both:",
-            "3v0",
-            "5v0",
+            &a.to_string(),
+            &c.to_string(),
             "",
         ]
     );
@@ -555,10 +557,12 @@ fn without_any_filter() {
         .register_component_as::<dyn Person, Human>()
         .register_component_as::<dyn Person, Dolphin>();
 
-    world.spawn(Human("Henry".to_owned(), 22));
-    world.spawn((Human("Henry".to_owned(), 22), Dolphin(22)));
-    world.spawn(Dolphin(22));
-    world.spawn(Fem);
+    let _ = world.spawn(Human("Henry".to_owned(), 22)).id();
+    let _ = world
+        .spawn((Human("Henry".to_owned(), 22), Dolphin(22)))
+        .id();
+    let _ = world.spawn(Dolphin(22)).id();
+    let d = world.spawn(Fem).id();
 
     let mut schedule = Schedule::default();
     schedule.add_systems(print_without_any_filter_info);
@@ -567,7 +571,11 @@ fn without_any_filter() {
 
     assert_eq!(
         world.resource::<Output>().0,
-        &["People that are neither Human or Dolphin:", "6v0", "",]
+        &[
+            "People that are neither Human or Dolphin:",
+            &d.to_string(),
+            "",
+        ]
     );
 }
 
@@ -748,17 +756,20 @@ fn transmute_doesnt_panic_if_no_trait_touched() {
         .register_component_as::<dyn Person, Human>()
         .register_component_as::<dyn Person, Dolphin>();
 
-    world.spawn(Human("Garbanzo".to_owned(), 7));
-    world.spawn((Human("Garbanzo".to_owned(), 7), Dolphin(47)));
-    world.spawn((Human("Garbanzo".to_owned(), 14), Fem));
-    world.spawn(Dolphin(27));
+    let a = world.spawn(Human("Garbanzo".to_owned(), 7)).id();
+    let _ = world.spawn((Human("Garbanzo".to_owned(), 7), Dolphin(47)));
+    let c = world.spawn((Human("Garbanzo".to_owned(), 14), Fem)).id();
+    let d = world.spawn(Dolphin(27)).id();
 
     let mut schedule = Schedule::default();
     schedule.add_systems(query_and_transmute_and_print);
 
     schedule.run(&mut world);
 
-    assert_eq!(world.resource::<Output>().0, &["3v0", "5v0", "6v0"]);
+    assert_eq!(
+        world.resource::<Output>().0,
+        &[a.to_string(), c.to_string(), d.to_string()]
+    );
 }
 
 fn query_and_transmute_and_print_panic(
