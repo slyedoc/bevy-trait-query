@@ -242,8 +242,8 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for One<&Trait> {
     }
 }
 
-unsafe impl<'a, Trait: ?Sized + TraitQuery> IterQueryData for One<&'a mut Trait> {}
-unsafe impl<'a, Trait: ?Sized + TraitQuery> SingleEntityQueryData for One<&'a mut Trait> {}
+unsafe impl<Trait: ?Sized + TraitQuery> IterQueryData for One<&mut Trait> {}
+unsafe impl<Trait: ?Sized + TraitQuery> SingleEntityQueryData for One<&mut Trait> {}
 unsafe impl<'a, Trait: ?Sized + TraitQuery> QueryData for One<&'a mut Trait> {
     type ReadOnly = One<&'a Trait>;
 

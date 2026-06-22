@@ -173,8 +173,8 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for All<&Trait> {
     }
 }
 
-unsafe impl<'a, Trait: ?Sized + TraitQuery> IterQueryData for All<&'a mut Trait> {}
-unsafe impl<'a, Trait: ?Sized + TraitQuery> SingleEntityQueryData for All<&'a mut Trait> {}
+unsafe impl<Trait: ?Sized + TraitQuery> IterQueryData for All<&mut Trait> {}
+unsafe impl<Trait: ?Sized + TraitQuery> SingleEntityQueryData for All<&mut Trait> {}
 unsafe impl<'a, Trait: ?Sized + TraitQuery> QueryData for All<&'a mut Trait> {
     type ReadOnly = All<&'a Trait>;
 
