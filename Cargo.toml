@@ -29,9 +29,9 @@ bevy      = { default-features = false, git = "https://github.com/bevyengine/bev
 criterion = { version = "0.8.1" }
 
 [patch."https://github.com/bevyengine/bevy"]
-bevy = { git = "https://github.com/slyedoc/bevy.git", branch = "animclip" }
-bevy_app = { git = "https://github.com/slyedoc/bevy.git", branch = "animclip" }
-bevy_ecs = { git = "https://github.com/slyedoc/bevy.git", branch = "animclip" }
+bevy = { git = "https://github.com/slyedoc/bevy.git", branch = "aurora" }
+bevy_app = { git = "https://github.com/slyedoc/bevy.git", branch = "aurora" }
+bevy_ecs = { git = "https://github.com/slyedoc/bevy.git", branch = "aurora" }
 
 # lints copied from bevy upstream
 [workspace.lints.clippy]
