@@ -10,8 +10,11 @@ license    = "MIT OR Apache-2.0"
 repository = "https://github.com/JoJoJet/bevy-trait-query/"
 
 [workspace.dependencies]
-bevy_app = { default-features = false, version = "0.19.0" }
-bevy_ecs = { default-features = false, version = "0.19.0" }
+# bevy-main port: deps point at upstream bevy git so consumers can [patch]
+# the whole graph onto one bevy (zero/bevy_aurora pin slyedoc/bevy; the
+# patch below makes this workspace build standalone against the same rev).
+bevy_app = { default-features = false, git = "https://github.com/bevyengine/bevy", branch = "main" }
+bevy_ecs = { default-features = false, git = "https://github.com/bevyengine/bevy", branch = "main" }
 tracing  = { default-features = false, version = "0.1.41" }
 
 # proc macro
@@ -22,8 +25,13 @@ quote                 = { version = "1.0.42" }
 syn                   = { features = ["full"], version = "2.0.111" }
 
 # dev deps
-bevy      = { default-features = false, version = "0.19.0" }
+bevy      = { default-features = false, git = "https://github.com/bevyengine/bevy", branch = "main" }
 criterion = { version = "0.8.1" }
+
+[patch."https://github.com/bevyengine/bevy"]
+bevy = { git = "https://github.com/slyedoc/bevy.git", branch = "animclip" }
+bevy_app = { git = "https://github.com/slyedoc/bevy.git", branch = "animclip" }
+bevy_ecs = { git = "https://github.com/slyedoc/bevy.git", branch = "animclip" }
 
 # lints copied from bevy upstream
 [workspace.lints.clippy]
