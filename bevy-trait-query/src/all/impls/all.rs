@@ -123,6 +123,16 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for All<&Trait> {
     }
 
     #[inline]
+    fn init_nested_access(
+        _state: &Self::State,
+        _system_name: Option<&str>,
+        _component_access_set: &mut bevy_ecs::query::FilteredAccessSet,
+        _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell,
+    ) {
+    }
+
+    fn update_archetypes(_state: &mut Self::State, _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell) {}
+
     fn update_component_access(state: &Self::State, access: &mut bevy_ecs::query::FilteredAccess) {
         let mut not_first = false;
         let mut new_access = access.clone();
@@ -267,6 +277,16 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for All<&mut Trait> {
     }
 
     #[inline]
+    fn init_nested_access(
+        _state: &Self::State,
+        _system_name: Option<&str>,
+        _component_access_set: &mut bevy_ecs::query::FilteredAccessSet,
+        _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell,
+    ) {
+    }
+
+    fn update_archetypes(_state: &mut Self::State, _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell) {}
+
     fn update_component_access(state: &Self::State, access: &mut bevy_ecs::query::FilteredAccess) {
         let mut not_first = false;
         let mut new_access = access.clone();

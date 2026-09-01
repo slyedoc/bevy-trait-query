@@ -192,6 +192,16 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for One<&Trait> {
     }
 
     #[inline]
+    fn init_nested_access(
+        _state: &Self::State,
+        _system_name: Option<&str>,
+        _component_access_set: &mut bevy_ecs::query::FilteredAccessSet,
+        _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell,
+    ) {
+    }
+
+    fn update_archetypes(_state: &mut Self::State, _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell) {}
+
     fn update_component_access(state: &Self::State, access: &mut bevy_ecs::query::FilteredAccess) {
         let mut new_access = access.clone();
         let mut not_first = false;
@@ -316,6 +326,7 @@ unsafe impl<'a, Trait: ?Sized + TraitQuery> QueryData for One<&'a mut Trait> {
                 dyn_ctor.cast_mut(ptr),
                 added,
                 changed,
+                None,
                 fetch.last_run,
                 fetch.this_run,
                 location.map(|loc| loc.deref_mut()),
@@ -412,6 +423,16 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for One<&mut Trait> {
     }
 
     #[inline]
+    fn init_nested_access(
+        _state: &Self::State,
+        _system_name: Option<&str>,
+        _component_access_set: &mut bevy_ecs::query::FilteredAccessSet,
+        _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell,
+    ) {
+    }
+
+    fn update_archetypes(_state: &mut Self::State, _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell) {}
+
     fn update_component_access(state: &Self::State, access: &mut bevy_ecs::query::FilteredAccess) {
         let mut new_access = access.clone();
         let mut not_first = false;

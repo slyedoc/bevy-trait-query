@@ -44,6 +44,16 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for WithOne<Trait> {
     unsafe fn set_table(_fetch: &mut (), _state: &Self::State, _table: &bevy_ecs::storage::Table) {}
 
     #[inline]
+    fn init_nested_access(
+        _state: &Self::State,
+        _system_name: Option<&str>,
+        _component_access_set: &mut bevy_ecs::query::FilteredAccessSet,
+        _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell,
+    ) {
+    }
+
+    fn update_archetypes(_state: &mut Self::State, _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell) {}
+
     fn update_component_access(state: &Self::State, access: &mut bevy_ecs::query::FilteredAccess) {
         let mut new_access = access.clone();
         for &component in state.components.iter() {
