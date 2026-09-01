@@ -236,6 +236,20 @@ fn impl_trait_query(arg: TokenStream, item: TokenStream) -> Result<TokenStream2>
                 <#my_crate::All<&#trait_object> as #imports::WorldQuery>::set_table(fetch, state, table);
             }
 
+            fn init_nested_access(
+                _state: &Self::State,
+                _system_name: Option<&str>,
+                _component_access_set: &mut #imports::FilteredAccessSet,
+                _world: #imports::UnsafeWorldCell,
+            ) {
+            }
+
+            fn update_archetypes(
+                _state: &mut Self::State,
+                _world: #imports::UnsafeWorldCell,
+            ) {
+            }
+
             #[inline]
             fn update_component_access(
                 state: &Self::State,
@@ -354,6 +368,20 @@ fn impl_trait_query(arg: TokenStream, item: TokenStream) -> Result<TokenStream2>
                 table: &'w #imports::Table,
             ) {
                 <#my_crate::All<&mut #trait_object> as #imports::WorldQuery>::set_table(fetch, state, table);
+            }
+
+            fn init_nested_access(
+                _state: &Self::State,
+                _system_name: Option<&str>,
+                _component_access_set: &mut #imports::FilteredAccessSet,
+                _world: #imports::UnsafeWorldCell,
+            ) {
+            }
+
+            fn update_archetypes(
+                _state: &mut Self::State,
+                _world: #imports::UnsafeWorldCell,
+            ) {
             }
 
             #[inline]
