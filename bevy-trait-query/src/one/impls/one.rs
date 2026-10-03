@@ -194,10 +194,9 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for One<&Trait> {
     #[inline]
     fn init_nested_access(
         _state: &Self::State,
-        _system_name: Option<&str>,
         _component_access_set: &mut bevy_ecs::query::FilteredAccessSet,
-        _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell,
-    ) {
+    ) -> Result<(), bevy_ecs::query::FilteredAccessSet> {
+        Ok(())
     }
 
     fn update_archetypes(_state: &mut Self::State, _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell) {}
@@ -425,10 +424,9 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for One<&mut Trait> {
     #[inline]
     fn init_nested_access(
         _state: &Self::State,
-        _system_name: Option<&str>,
         _component_access_set: &mut bevy_ecs::query::FilteredAccessSet,
-        _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell,
-    ) {
+    ) -> Result<(), bevy_ecs::query::FilteredAccessSet> {
+        Ok(())
     }
 
     fn update_archetypes(_state: &mut Self::State, _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell) {}

@@ -46,10 +46,9 @@ unsafe impl<Trait: ?Sized + TraitQuery> WorldQuery for WithoutAny<Trait> {
     #[inline]
     fn init_nested_access(
         _state: &Self::State,
-        _system_name: Option<&str>,
         _component_access_set: &mut bevy_ecs::query::FilteredAccessSet,
-        _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell,
-    ) {
+    ) -> Result<(), bevy_ecs::query::FilteredAccessSet> {
+        Ok(())
     }
 
     fn update_archetypes(_state: &mut Self::State, _world: bevy_ecs::world::unsafe_world_cell::UnsafeWorldCell) {}
@@ -96,6 +95,11 @@ impl<Trait: ?Sized + TraitQuery> ArchetypeFilter for WithoutAny<Trait> {}
 /// SAFETY: read-only access
 unsafe impl<Trait: ?Sized + TraitQuery> QueryFilter for WithoutAny<Trait> {
     const IS_ARCHETYPAL: bool = false;
+
+    #[inline(always)]
+    unsafe fn filter_table(_state: &Self::State, _fetch: &mut Self::Fetch<'_>) -> bool {
+        true
+    }
     unsafe fn filter_fetch(
         _state: &Self::State,
         _fetch: &mut Self::Fetch<'_>,

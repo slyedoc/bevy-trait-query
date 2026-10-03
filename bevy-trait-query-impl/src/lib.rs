@@ -238,10 +238,9 @@ fn impl_trait_query(arg: TokenStream, item: TokenStream) -> Result<TokenStream2>
 
             fn init_nested_access(
                 _state: &Self::State,
-                _system_name: Option<&str>,
                 _component_access_set: &mut #imports::FilteredAccessSet,
-                _world: #imports::UnsafeWorldCell,
-            ) {
+            ) -> ::core::result::Result<(), #imports::FilteredAccessSet> {
+                ::core::result::Result::Ok(())
             }
 
             fn update_archetypes(
@@ -372,10 +371,9 @@ fn impl_trait_query(arg: TokenStream, item: TokenStream) -> Result<TokenStream2>
 
             fn init_nested_access(
                 _state: &Self::State,
-                _system_name: Option<&str>,
                 _component_access_set: &mut #imports::FilteredAccessSet,
-                _world: #imports::UnsafeWorldCell,
-            ) {
+            ) -> ::core::result::Result<(), #imports::FilteredAccessSet> {
+                ::core::result::Result::Ok(())
             }
 
             fn update_archetypes(
